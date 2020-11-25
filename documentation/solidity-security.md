@@ -96,8 +96,17 @@ An overflow/underflow happens when an arithmetic operation reaches the maximum o
 |int256|-57896044618658097711785492504343953926<br>634992332820282019728792003956564819968|57896044618658097711785492504343953926<br>634992332820282019728792003956564819967|
 
 In computer programming, an integer overflow occurs when an arithmetic operation attempts to create a numeric value that is outside of the range that can be represented with a given number of bits – either larger than the maximum or lower than the minimum representable value.
-In Ethereum if maximum is reached, the value will circle back to zero.
-In Ethereum if minimum is reached, the value will circle back to its maximum value.
+**In Ethereum if maximum is reached, the value will circle back to its minimum value.**  
+**In Ethereum if minimum is reached, the value will circle back to its maximum value.**
+
+```solidity
+// Overflow: nb1 equals 0
+uint256 nb1 = 115792089237316195423570985008687907853269984665640564039457584007913129639935 + 1;
+// Overflow: nb2 equals 1
+uint256 nb2 = 115792089237316195423570985008687907853269984665640564039457584007913129639935 + 2;
+// Underflow: nb3 equals 115792089237316195423570985008687907853269984665640564039457584007913129639927
+uint256 nb3 = 1 - 10;
+```
 
 There are around 20 cases for overflow and underflow:
 
