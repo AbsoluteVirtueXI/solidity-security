@@ -23,7 +23,7 @@ https://consensys.github.io/smart-contract-best-practices/
 
 An overflow/underflow happens when an arithmetic operation reaches the maximum or minimum size of a type. For instance if a number is stored in the uint8 type, it means that the number is stored in a 8 bits unsigned number ranging from 0 to 2^8-1. If a number is stored in the uint256 type, it means that the number is stored in a 256 bits unsigned number ranging from 0 to 2^256-1.
 
-Unsigned integer minimum/maximum values:  
+**Unsigned integer minimum/maximum values**:  
 | Type | minimum | maximum |
 |---|---:|:---|
 |uint8 | 0| 256|
@@ -59,7 +59,7 @@ Unsigned integer minimum/maximum values:
 |uint248|0|452312848583266388373324160190187140051835877600158453279131187530910662655|
 |uint256|0|115792089237316195423570985008687907853269984665640564039457584007913129639935|
 
-Signed integer minimum/maximum values:  
+**Signed integer minimum/maximum values**:  
 | Type | minimum | maximum |
 |---|:---|:---|
 |int8 | 0| 256|
