@@ -216,18 +216,6 @@ DAO flaw
 [Reentrancy](https://consensys.github.io/smart-contract-best-practices/known_attacks/#reentrancy) by Consensys  
 [Solidity: Reentrancy](https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy)
 
-#### single function reentrancy attack
-
-#### cross-function reentrance attack
-
-#### Defense against reentrancy
-
-#### checks-effects-interactions pattern
-
-#### reentrancy guards
-
-#### pull payments.
-
 ### Defense against
 
 ## DDOS
