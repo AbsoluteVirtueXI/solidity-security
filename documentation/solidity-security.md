@@ -191,6 +191,13 @@ npx mocha --exit test/overflow_test.js
 
 Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol) library from Openzepplin for arithmetic operations.
 
+### References:
+
+[SWC-101](https://swcregistry.io/docs/SWC-101)  
+[Integer Overflow and Underflow by Consensys](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow)  
+[Solidity: Two’s Complement / Underflows / Overflows](Two’s Complement / Underflows / Overflows)  
+[Description of the BEC hack](https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e)
+
 ## tx.origin
 
 ## reentrency DAO flaw
