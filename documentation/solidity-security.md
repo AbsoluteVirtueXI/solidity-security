@@ -308,8 +308,8 @@ npx mocha --exit test/tx_origin_test.js
 
 ### References
 
-[SWC-115](https://swcregistry.io/docs/SWC-115)
-[Avoid using tx.origin](https://consensys.github.io/smart-contract-best-practices/recommendations/#avoid-using-txorigin) by Consensys.
+[SWC-115](https://swcregistry.io/docs/SWC-115)  
+[Avoid using tx.origin](https://consensys.github.io/smart-contract-best-practices/recommendations/#avoid-using-txorigin) by Consensys.  
 [Solidity documentation on tx.origin pitfalls](https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin)
 
 ## Reentrancy
