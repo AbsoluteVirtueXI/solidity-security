@@ -1,25 +1,18 @@
-# solidity: Security
+# Ethereum Secure Development
 
-## security tools
+## Consensys smart contract best practice: Known attacks
 
-### manticore by trail of bits
+https://consensys.github.io/smart-contract-best-practices/known_attacks/
 
-https://github.com/trailofbits/manticore
-view demo
+## Smart Contract Weakness Classification Registry
 
-oyente mithril
+The [Smart Contract Weakness Classification Registry](https://swcregistry.io/) offers a complete and up-to-date catalogue of known smart contract vulnerabilities and anti-patterns along with real-world examples. Browsing the registry is a good way of keeping up-to-date with the latest attacks.
 
-### other tools
-
-...
-
-## Consensys smart contract best practice
-
-https://consensys.github.io/smart-contract-best-practices/
+# Known attacks
 
 ## Integer Overflow and Underflow
 
-### Description
+### Description of Integer Overflow and Underflow
 
 An overflow/underflow happens when an arithmetic operation reaches the maximum or minimum size of a type. For instance if a number is stored in the uint8 type, it means that the number is stored in a 8 bits unsigned number ranging from 0 to 2^8-1. If a number is stored in the uint256 type, it means that the number is stored in a 256 bits unsigned number ranging from 0 to 2^256-1.
 
@@ -171,7 +164,7 @@ uint256 amount = uint256(cnt).mul(_value);
 The tokens stolen would have been caused disasters, the price of BEC at that time was around $0.3 each. Fortunately, the hacker hadn’t sold much before the dev-team paused the contract. The market reacted by price-plunging.  
 ![BEC Token price](../res/BEC_token_price.png)
 
-### Demonstration
+### Demonstration of Integer Overflow and Underflow attacks
 
 The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to an integer overflow and underflow on all arithmetic functions.  
 The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
@@ -187,28 +180,28 @@ Run the test file with:
 npx mocha --exit test/overflow_test.js
 ```
 
-### Defense
+### Defense against Integer Overflow and Underflow
 
 Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol) library from Openzepplin for arithmetic operations.
 
-### References:
+### References on Integer Overflow and UnderFlow:
 
 [SWC-101](https://swcregistry.io/docs/SWC-101)  
 [Integer Overflow and Underflow by Consensys](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow)  
 [Solidity: Two’s Complement / Underflows / Overflows](Two’s Complement / Underflows / Overflows)  
 [Description of the BEC hack](https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e)
 
-## tx.origin
+### tx.origin
 
-## reentrency DAO flaw
+### reentrency DAO flaw
 
 https://blog.openzeppelin.com/reentrancy-after-istanbul/
 
-### single function reentrancy attack
+#### single function reentrancy attack
 
-### cross-function reentrance attack
+#### cross-function reentrance attack
 
-### Defense against reentrancy
+#### Defense against reentrancy
 
 #### checks-effects-interactions pattern
 
@@ -219,3 +212,16 @@ https://blog.openzeppelin.com/reentrancy-after-istanbul/
 ### Defense against
 
 ## DDOS
+
+## security tools
+
+### manticore by trail of bits
+
+https://github.com/trailofbits/manticore
+view demo
+
+oyente mithril
+
+### other tools
+
+...
