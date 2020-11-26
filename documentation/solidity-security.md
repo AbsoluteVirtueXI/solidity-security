@@ -187,15 +187,20 @@ Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/m
 ### References on Integer Overflow and UnderFlow:
 
 [SWC-101](https://swcregistry.io/docs/SWC-101)  
-[Integer Overflow and Underflow by Consensys](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow)  
+[Integer Overflow and Underflow](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow) by Consensys  
 [Solidity: Two’s Complement / Underflows / Overflows](Two’s Complement / Underflows / Overflows)  
 [Description of the BEC hack](https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e)
 
-### tx.origin
+## tx.origin
 
-### reentrency DAO flaw
+## reentrency DAO flaw
 
-https://blog.openzeppelin.com/reentrancy-after-istanbul/
+### References on reentrancy attack
+
+[Reentrancy After Istanbul](https://blog.openzeppelin.com/reentrancy-after-istanbul/) by Openzepplin
+[SWC-107](https://swcregistry.io/docs/SWC-107)
+[Reentrancy] by Consensys
+[Solidity: Reentrancy]
 
 #### single function reentrancy attack
 
