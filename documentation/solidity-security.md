@@ -193,13 +193,27 @@ Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/m
 
 ## tx.origin
 
-## reentrency DAO flaw
+## Reentrency
+
+DAO flaw
+
+### single function reentrancy attack
+
+### cross-function reentrance attack
+
+### Defense against reentrancy
+
+#### checks-effects-interactions pattern
+
+#### reentrancy guards
+
+#### pull payments.
 
 ### References on reentrancy attack
 
-[Reentrancy After Istanbul](https://blog.openzeppelin.com/reentrancy-after-istanbul/) by Openzepplin
-[SWC-107](https://swcregistry.io/docs/SWC-107)
-[Reentrancy](https://consensys.github.io/smart-contract-best-practices/known_attacks/#reentrancy) by Consensys
+[Reentrancy After Istanbul](https://blog.openzeppelin.com/reentrancy-after-istanbul/) by Openzepplin  
+[SWC-107](https://swcregistry.io/docs/SWC-107)  
+[Reentrancy](https://consensys.github.io/smart-contract-best-practices/known_attacks/#reentrancy) by Consensys  
 [Solidity: Reentrancy](https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy)
 
 #### single function reentrancy attack
