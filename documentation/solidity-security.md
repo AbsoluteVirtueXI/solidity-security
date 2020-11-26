@@ -173,16 +173,15 @@ The tokens stolen would have been caused disasters, the price of BEC at that tim
 
 ### Demonstration
 
-The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to integer overflow and underflow on all arithmetic functions.  
+The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to an integer overflow and underflow on all arithmetic functions.  
 The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
 The smart contract [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.
 The smart contract [SecBecToken.sol](../contracts/overflow/SecBecToken.sol) is a secured version with `SafeMath`.
 
 The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these flawed contracts and their secured version.  
 It triggers an integer overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
-It triggers an integer overflow on [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) and permits the transfer of Bec token by an attacker who doesn't own any. [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is secured by `SafeMath` at line 32 and reverts if an overflow is detected.
-<br>
-Run it with:
+It triggers an integer overflow on [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) and permits the transfer of Bec tokens by an attacker who doesn't own any. [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is secured by `SafeMath` at line 32 and reverts if an overflow is detected.  
+Run the test file with:
 
 ```zsh
 npx mocha --exit test/overflow_test.js
