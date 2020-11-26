@@ -168,7 +168,7 @@ The tokens stolen would have been caused disasters, the price of BEC at that tim
 
 The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to an integer overflow and underflow on all arithmetic functions.  
 The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
-The smart contract [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.
+The smart contract [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.  
 The smart contract [SecBecToken.sol](../contracts/overflow/SecBecToken.sol) is a secured version with `SafeMath`.
 
 The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these flawed contracts and their secured version.  
@@ -188,7 +188,7 @@ Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/m
 
 [SWC-101](https://swcregistry.io/docs/SWC-101)  
 [Integer Overflow and Underflow](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow) by Consensys  
-[Solidity: Two’s Complement / Underflows / Overflows](Two’s Complement / Underflows / Overflows)  
+[Solidity: Two’s Complement / Underflows / Overflows](https://docs.soliditylang.org/en/latest/security-considerations.html#two-s-complement-underflows-overflows)  
 [Description of the BEC hack](https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e)
 
 ## tx.origin
@@ -199,8 +199,8 @@ Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/m
 
 [Reentrancy After Istanbul](https://blog.openzeppelin.com/reentrancy-after-istanbul/) by Openzepplin
 [SWC-107](https://swcregistry.io/docs/SWC-107)
-[Reentrancy] by Consensys
-[Solidity: Reentrancy]
+[Reentrancy](https://consensys.github.io/smart-contract-best-practices/known_attacks/#reentrancy) by Consensys
+[Solidity: Reentrancy](https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy)
 
 #### single function reentrancy attack
 
