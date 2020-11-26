@@ -96,8 +96,8 @@ An overflow/underflow happens when an arithmetic operation reaches the maximum o
 |int256|-57896044618658097711785492504343953926<br>634992332820282019728792003956564819968|57896044618658097711785492504343953926<br>634992332820282019728792003956564819967|
 
 In computer programming, an integer overflow occurs when an arithmetic operation attempts to create a numeric value that is outside of the range that can be represented with a given number of bits – either larger than the maximum or lower than the minimum representable value.  
-**In Ethereum if maximum is reached, the value will circle back to its minimum value.**  
-**In Ethereum if minimum is reached, the value will circle back to its maximum value.**
+**In Ethereum, while an arithmetic operation, if maximum is reached, the value will circle back to its minimum value.**  
+**In Ethereum, while an arithmetic operation, if minimum is reached, the value will circle back to its maximum value.**
 
 ```solidity
 // Overflow: nb1 equals 0
@@ -127,7 +127,6 @@ There are around 20 cases for overflow and underflow:
 - overflow in +=
 - overflow in -=
 - overflow in \*=
-- overflow in /=
 - exponentiation
 
 This attack was use on the [BEC token](https://etherscan.io/address/0xc5d105e63711398af9bbff092d4b6769c82f793d#code) in April 22, 2018.
@@ -158,12 +157,31 @@ uint256 amount = uint256(cnt) * _value;
 
 The attack happened with `batchTransfer` function called with an array of 2 addresses as 1st argument for the `_receivers` parameter (addresses owned by attackers) and the value 578960446186580977117854925043439539266349923328202820197287 as 2nd argument for the `_value` parameter.  
 The multiplication `578960446186580977117854925043439539266349923328202820197287 \* 2` set the `amount` variable to 0, and pass successfully the `require`:
-`solidity require(_value > 0 && balances[msg.sender] >= amount);`
+
+```solidity
+require(_value > 0 && balances[msg.sender] >= amount);
+```
+
+The remediation is the usage of `SafeMath` for the multiplication:
+
+```solidity
+uint256 amount = uint256(cnt).mul(_value);
+```
 
 The tokens stolen would have been caused disasters, the price of BEC at that time was around $0.3 each. Fortunately, the hacker hadn’t sold much before the dev-team paused the contract. The market reacted by price-plunging.  
 ![BEC Token price](../res/BEC_token_price.png)
 
 ### Demonstration
+
+The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to integer overflow and underflow on all arithmetic functions.  
+The smart contract [SecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is the secured version with `SafeMath`.  
+The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these 2 contracts.  
+It triggers overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/InsecCalculator.sol) if an overflow or underflow is detected.  
+Run it with:
+
+```zsh
+npx mocha --exit test/overflow_test.js
+```
 
 ### Defense
 

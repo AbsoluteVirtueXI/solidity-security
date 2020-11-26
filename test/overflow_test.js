@@ -13,7 +13,7 @@ describe('Overflow / Underflow', function () {
       this.insecCalculator = await InsecCalculator.new();
     });
 
-    it('overflow: 10 + 115792089237316195423570985008687907853269984665640564039457584007913129639935 == 9', async function () {
+    it('overflows: 10 + 115792089237316195423570985008687907853269984665640564039457584007913129639935 == 9', async function () {
       expect(
         await this.insecCalculator.add(
           new BN(10),
@@ -22,7 +22,7 @@ describe('Overflow / Underflow', function () {
       ).to.be.a.bignumber.equal(new BN(9));
     });
 
-    it('it underflows: 1337 - 313373 == 115792089237316195423570985008687907853269984665640564039457584007913129327900', async function () {
+    it('underflows: 1337 - 313373 == 115792089237316195423570985008687907853269984665640564039457584007913129327900', async function () {
       expect(await this.insecCalculator.sub(new BN(1337), new BN(313373))).to.be.a.bignumber.equal(
         new BN('115792089237316195423570985008687907853269984665640564039457584007913129327900')
       );
@@ -34,7 +34,7 @@ describe('Overflow / Underflow', function () {
       this.secCalculator = await SecCalculator.new();
     });
 
-    it('reverts on overflow: 10 + 115792089237316195423570985008687907853269984665640564039457584007913129639935 reverts', async function () {
+    it('reverts on overflow: 10 + 115792089237316195423570985008687907853269984665640564039457584007913129639935 => reverts', async function () {
       await expectRevert(
         this.secCalculator.add(
           new BN(10),
@@ -44,7 +44,7 @@ describe('Overflow / Underflow', function () {
       );
     });
 
-    it('reverts on underflow: 1337 - 313373 reverts', async function () {
+    it('reverts on underflow: 1337 - 313373 => reverts', async function () {
       await expectRevert(this.secCalculator.sub(new BN(1337), new BN(313373)), 'SafeMath: subtraction overflow');
     });
   });
