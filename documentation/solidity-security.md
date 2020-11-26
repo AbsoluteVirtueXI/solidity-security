@@ -160,7 +160,7 @@ The attack happened with `batchTransfer` function called with an array of 2 addr
 The multiplication `578960446186580977117854925043439539266349923328202820197287 \* 2` set the `amount` variable to 0, and pass successfully the require `require(_value > 0 && balances[msg.sender] >= amount);`{:.sol}
 
 The tokens stolen would have been caused disasters, the price of BEC at that time was around $0.3 each. Fortunately, the hacker hadn’t sold much before the dev-team paused the contract. The market reacted by price-plunging.  
-![BEC Token price](res/BEC_token_price.png)
+![BEC Token price](../res/BEC_token_price.png)
 
 ### Demonstration
 
