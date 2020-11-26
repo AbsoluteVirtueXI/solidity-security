@@ -190,7 +190,7 @@ npx mocha --exit test/overflow_test.js
 
 ### Defense
 
-Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol) library from Openzepplin for arithmetic functions.
+Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol) library from Openzepplin for arithmetic operations.
 
 ## tx.origin
 
