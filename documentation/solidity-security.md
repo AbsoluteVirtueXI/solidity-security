@@ -174,9 +174,9 @@ The tokens stolen would have been caused disasters, the price of BEC at that tim
 ### Demonstration
 
 The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to integer overflow and underflow on all arithmetic functions.  
-The smart contract [SecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is the secured version with `SafeMath`.  
+The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
 The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these 2 contracts.  
-It triggers overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/InsecCalculator.sol) if an overflow or underflow is detected.  
+It triggers overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
 Run it with:
 
 ```zsh
