@@ -130,11 +130,45 @@ There are around 20 cases for overflow and underflow:
 - overflow in /=
 - exponentiation
 
+This attack was use on the [BEC token](https://etherscan.io/address/0xc5d105e63711398af9bbff092d4b6769c82f793d#code) in April 22, 2018.
+The line 261 of the smart contract was vulnerable to an integer overflow attack by multiplication in the `batchTransfer` function:
+
+```solidity
+function batchTransfer(address[] _receivers, uint256 _value) public whenNotPaused returns (bool) {
+  uint256 cnt = _receivers.length;
+  uint256 amount = uint256(cnt) * _value;
+  require(cnt > 0 && cnt <= 20);
+  require(_value > 0 && balances[msg.sender] >= amount);
+
+  balances[msg.sender] = balances[msg.sender].sub(amount);
+  for (uint256 i = 0; i < cnt; i++) {
+    balances[_receivers[i]] = balances[_receivers[i]].add(_value);
+    Transfer(msg.sender, _receivers[i], _value);
+  }
+  return true;
+}
+
+```
+
+The vulnerable line of code is:
+
+```solidity
+uint256 amount = uint256(cnt) * _value;
+```
+
+The attack happened with `batchTransfer` function called with an array of 2 addresses as 1st argument for the `_receivers` parameter (addresses owned by attackers) and the value 578960446186580977117854925043439539266349923328202820197287 as 2nd argument for the `_value` parameter.
+The multiplication `578960446186580977117854925043439539266349923328202820197287 \* 2` set the `amount` variable to 0, and pass successfully the require `require(_value > 0 && balances[msg.sender] >= amount);`{:.sol}
+
+The tokens stolen would have been caused disasters, the price of BEC at that time was around $0.3 each. Fortunately, the hacker hadn’t sold much before the dev-team paused the contract. The market reacted by price-plunging.  
+![BEC Token price](res/BEC_token_price.png)
+
 ### Demonstration
 
 ### Defense
 
 Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/master/contracts/math/SafeMath.sol) library from Openzepplin for arithmetic functions.
+
+## tx.origin
 
 ## reentrency DAO flaw
 
