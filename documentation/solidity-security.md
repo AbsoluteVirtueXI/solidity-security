@@ -166,15 +166,15 @@ The tokens stolen would have been caused disasters, the price of BEC at that tim
 
 ### Demonstration of Integer Overflow and Underflow attacks
 
-The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to an integer overflow and underflow on all arithmetic functions.  
-The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
-The smart contract [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.  
-The smart contract [SecBecToken.sol](../contracts/overflow/SecBecToken.sol) is a secured version with `SafeMath`.
+The smart contract [InsecCalculator](../contracts/overflow/InsecCalculator.sol) is vulnerable to an integer overflow and underflow on all arithmetic functions.  
+The smart contract [SecCalculator](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
+The smart contract [InsecBecToken](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.  
+The smart contract [SecBecToken](../contracts/overflow/SecBecToken.sol) is a secured version with `SafeMath`.
 
 The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these flawed contracts and their secured version.  
-It triggers an integer overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
-It triggers an integer overflow on [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) and permits the transfer of Bec tokens by an attacker who doesn't own any. [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is secured by `SafeMath` at line 32 and reverts if an overflow is detected.  
-Run the test file with:
+It triggers an integer overflow and underflow on [InsecCalculator](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
+It triggers an integer overflow on [InsecBecToken](../contracts/overflow/InsecBecToken.sol) and permits the transfer of Bec tokens by an attacker who doesn't own any. [SecCalculator](../contracts/overflow/SecCalculator.sol) is secured by `SafeMath` at line 32 and reverts if an overflow is detected.  
+Run the exploit demonstration with:
 
 ```zsh
 npx mocha --exit test/overflow_test.js
@@ -188,11 +188,88 @@ Use [SafeMath.sol](https://github.com/OpenZeppelin/openzeppelin-contracts/blob/m
 
 [SWC-101](https://swcregistry.io/docs/SWC-101)  
 [Integer Overflow and Underflow](https://consensys.github.io/smart-contract-best-practices/known_attacks/#integer-overflow-and-underflow) by Consensys  
-[Solidity: Two’s Complement / Underflows / Overflows](https://docs.soliditylang.org/en/latest/security-considerations.html#two-s-complement-underflows-overflows)  
+[Solidity documentation: Two’s Complement / Underflows / Overflows](https://docs.soliditylang.org/en/latest/security-considerations.html#two-s-complement-underflows-overflows)  
 [Description of the BEC hack](https://medium.com/secbit-media/a-disastrous-vulnerability-found-in-smart-contracts-of-beautychain-bec-dbf24ddbc30e)  
 [Another description of the BEC hack](https://blockchain-projects.readthedocs.io/overflow.html)
 
-## tx.origin
+## Authorization bypass through `tx.origin`
+
+TL;DR: **NEVER USE `tx.origin`in your smart contract for account identification or authorization!!! Use `msg.sender` instead**
+
+### Description of Authorization bypass through `tx.origin`
+
+[`tx.origin`](https://docs.soliditylang.org/en/latest/units-and-global-variables.html#block-and-transaction-properties) is a global variable accessible from solidity contract.  
+`tx.origin` returns the address of the account that sent the transaction.
+`tx.origin` looks like `msg.sender` but with a difference:
+
+- `tx.origin` returns the address of the account that initiated the **transaction**.
+- `msg.sender` returns the address of the account/smart contract that initiated the **function call**.
+
+A single transaction can contain more than one function call within more than one smart contract.
+In the context of smart contract call chain, a smart contract using `tx.origin` can be abused.
+Using the variable for authorization could make a contract vulnerable if an authorized account calls into a malicious contract. A call could be made to the vulnerable contract that passes the authorization check since `tx.origin` returns the original sender of the transaction which in this case is the authorized account.
+
+A transaction:
+
+<pre>
+Alice ==================> Malicious Smart Contract ==================> Vulnerable Smart Contract
+address: 0x123            address: 0x456                               address: 0x789  
+                          context within smart contract:               context within smart contract: 
+                                msg.sender = 0x123                          msg.sender: 0x456 
+                                tx.origin = 0x123                           tx.origin: 0x123
+</pre>
+
+If the _Vulnerable Smart Contract_ uses `tx.origin` for identifying an account it can be tricked by _the Malicious Smart Contract_. The _Malicious Smart Contract_ can call all functions in the _Vulnerable Smart Contract_ using `tx.origin` on behalf of _Alice_.  
+So the _Malicious Smart Contract_ can bypass the authorization system in _Vulnerable Smart Contract_.
+
+`tx.origin` is a naive way for getting the account who initiated the transaction. But it is more harmful than helpful.
+If `tx.origin` appears in your code you are doing something wrong.
+
+### Demonstration of Authorization bypass through `tx.origin`
+
+The smart contract [TxWallet](../contracts/tx_origin/TxWallet.sol) contains 2 functions for sending ethers from the smart contract to an address.
+`vulnerableTransferTo` is vulnerable to **Authorization bypass through `tx.origin`**
+`safeTransferTo` is protected from **Authorization bypass through `tx.origin`**
+
+_TxWallet.sol_:
+
+```solidity
+// SPDX-License-Identifier: MIT
+pragma solidity >=0.6.0 <0.8.0;
+
+// Need to send ethers to the smart contract for the demonstration
+// of an Authorization bypass through tx.origin and its remediation
+contract TxWallet {
+  address private _owner;
+
+  constructor() public {
+    _owner = msg.sender;
+  }
+
+  function vulnerableTransferTo(address payable dst, uint256 amount) public {
+    require(tx.origin == _owner, "TxWallet: Only owner can transfer ethers");
+    dst.transfer(amount);
+  }
+
+  function safeTransferTo(address payable dst, uint256 amount) public {
+    require(msg.sender == _owner, "TxWallet: Only owner can transfer ethers");
+    dst.transfer(amount);
+  }
+
+  receive() external payable {}
+}
+
+```
+
+In `vulnerableTransferTo` the `_owner` is compared to `tx.origin`, but even if the address returns by `tx.origin` is the account that initiated the transaction, it is not necessary the account that called the function `vulnerableTransferTo`.  
+In `safeTransferTo` the `_owner` is compared to `msg.sender`, so only the address that called the function `safeTransferTo` is compared to `_owner`.  
+The malicious contract [MaliciousContract](../contracts/tx_origin/MaliciousContract.sol) abuse the `vulnerableTransferTo` function of [TxWallet](../contracts/tx_origin/TxWallet.sol), but can't abuse the `safeTransferTo` function.
+
+### Defense against Authorization bypass through `tx.origin`
+
+`tx.origin` **must not be used** for authorization. Use `msg.sender` instead.
+
+### References
 
 ## Reentrancy
 
@@ -222,6 +299,8 @@ DAO flaw
 ## DDOS
 
 ## security tools
+
+https://blog.trailofbits.com/2019/08/08/246-findings-from-our-smart-contract-audits-an-executive-summary/
 
 ### manticore by trail of bits
 
