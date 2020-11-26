@@ -155,8 +155,8 @@ The vulnerable line of code is:
 uint256 amount = uint256(cnt) * _value;
 ```
 
-The attack happened with `batchTransfer` function called with an array of 2 addresses as 1st argument for the `_receivers` parameter (addresses owned by attackers) and the value 578960446186580977117854925043439539266349923328202820197287 as 2nd argument for the `_value` parameter.  
-The multiplication `578960446186580977117854925043439539266349923328202820197287 \* 2` set the `amount` variable to 0, and pass successfully the `require`:
+The attack happened with `batchTransfer` function called with an array of 2 addresses as 1st argument for the `_receivers` parameter (addresses owned by attackers) and the value 57896044618658097711785492504343953926634992332820282019728792003956564819968 as 2nd argument for the `_value` parameter.  
+The multiplication `57896044618658097711785492504343953926634992332820282019728792003956564819968 * 2` set the `amount` variable to 0, and pass successfully the `require`:
 
 ```solidity
 require(_value > 0 && balances[msg.sender] >= amount);
@@ -175,8 +175,13 @@ The tokens stolen would have been caused disasters, the price of BEC at that tim
 
 The smart contract [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) is vulnerable to integer overflow and underflow on all arithmetic functions.  
 The smart contract [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is the secured version with `SafeMath`.  
-The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these 2 contracts.  
-It triggers overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
+The smart contract [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) is vulnerable to an integer overflow on its `batchTransfer` function at line 240.
+The smart contract [SecBecToken.sol](../contracts/overflow/SecBecToken.sol) is a secured version with `SafeMath`.
+
+The test file [overflow_test.js](../test/overflow_test.js) demonstrates the usage of these flawed contracts and their secured version.  
+It triggers an integer overflow and underflow on [InsecCalculator.sol](../contracts/overflow/InsecCalculator.sol) and reverts on [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) if an overflow or underflow is detected.  
+It triggers an integer overflow on [InsecBecToken.sol](../contracts/overflow/InsecBecToken.sol) and permits the transfer of Bec token by an attacker who doesn't own any. [SecCalculator.sol](../contracts/overflow/SecCalculator.sol) is secured by `SafeMath` at line 32 and reverts if an overflow is detected.
+<br>
 Run it with:
 
 ```zsh
