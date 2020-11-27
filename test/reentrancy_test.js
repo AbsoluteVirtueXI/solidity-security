@@ -35,9 +35,9 @@ describe('Reentrancy', function () {
         from: attacker1,
       }
     );
-    // Attacker1 deposists 10 ether to the MaliciousCrossReentrantContract
+    // Attacker1 deposists 1 ether to the MaliciousCrossReentrantContract
     await this.maliciousCrossReentrantContract.deposit({ value: ether('1'), from: attacker1 });
-    // Attacker1 sends 10 ether from MaliciousCrossReentrantContract to VulReentrantWallet
+    // Attacker1 sends 1 ether from MaliciousCrossReentrantContract to VulReentrantWallet
     await this.maliciousCrossReentrantContract.callDepositOnVulWallet({ from: attacker1 });
   });
 

@@ -36,7 +36,9 @@ contract VulReentrantWallet {
         // And  the malicious smart contract will call again withdraw() before
         // balances[msg.sender] is updated
         (bool success, ) = msg.sender.call{value: amount}("");
+        //msg.sender.transfer(amount); a verifier si custom gas maximum
         //require(success);
+
         // BAD: balances update come after ethers sending
         _balances[msg.sender] = 0;
     }

