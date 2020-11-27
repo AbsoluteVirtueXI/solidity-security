@@ -333,14 +333,13 @@ function withdraw() public {
     // And  the malicious smart contract will call again withdraw() before
     // balances[msg.sender] is updated
     (bool success, ) = msg.sender.call{value: amount}("");
-    require(success);
     // BAD: balances update come after ethers sending
     _balances[msg.sender] = _balances[msg.sender].sub(amount);
 }
 ```
 
 If `withdraw()` is called by a user account, there is no problem because user account can't execute code a ethers reception.
-If `withdraw()` is called by a malicious smart contract, `msg.sender.call.value(amount)("");` will execute the `receive()` or `fallback()` function of the malicious smart contract, which can call again `withdraw()` function, again and again
+If `withdraw()` is called by a malicious smart contract, `msg.sender.call{value: amount}("")` will execute the `receive()` or `fallback()` function of the malicious smart contract, which can call again `withdraw()` function, again and again
 
 ```solidity
 // receive function of a malicious smart contract
@@ -351,6 +350,41 @@ receive() external payable {
 ```
 
 ### cross-function reentrance attack
+
+```solidity
+// Vulnerable to single function reentrancy attack on withdraw function
+// and vulnerable to a cross-function reentrancy attack on transfer function
+
+mapping (address => uint) private _balances;
+
+// withdraw is vulnerable to reentrancy, but transfer function shares same
+// state as withdraw function.
+function transfer(address dst, uint256 amount) public {
+    require(_balances[msg.sender] >= amount, "VulMultiWallet: Not enough funds for transfer");
+    _balances[dst] = _balances[dst].add(amount);
+    _balances[msg.sender] = _balances[msg.sender].sub(amount);
+}
+
+function withdraw() public {
+    uint256 amount = _balances[msg.sender];
+    // Can call a reiceve or fallback function on a malicious smart contract
+    // And  the malicious smart contract will call again withdraw() before
+    // balances[msg.sender] is updated
+    (bool success, ) = msg.sender.call{value: amount}("");
+    // BAD: balances update come after ethers sending
+    _balances[msg.sender] = _balances[msg.sender].sub(amount);
+}
+```
+
+If `withdraw()` is called by a malicious smart contract, `msg.sender.call{value: amount}("")` will execute the `receive()` or `fallback()` function of the malicious smart contract, which can call `transfer` function on the Vulnerable contract.
+
+### Demonstration of reentrancy attacks
+
+Run the exploit demonstration with:
+
+```zsh
+npx mocha --exit test/reentrancy_test.js
+```
 
 ### Defense against reentrancy
 
@@ -366,8 +400,6 @@ receive() external payable {
 [SWC-107](https://swcregistry.io/docs/SWC-107)  
 [Reentrancy](https://consensys.github.io/smart-contract-best-practices/known_attacks/#reentrancy) by Consensys  
 [Solidity: Reentrancy](https://docs.soliditylang.org/en/latest/security-considerations.html#re-entrancy)
-
-### Defense against
 
 ## DDOS
 

