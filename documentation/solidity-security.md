@@ -312,11 +312,43 @@ npx mocha --exit test/tx_origin_test.js
 [Avoid using tx.origin](https://consensys.github.io/smart-contract-best-practices/recommendations/#avoid-using-txorigin) by Consensys.  
 [Solidity documentation on tx.origin pitfalls](https://docs.soliditylang.org/en/latest/security-considerations.html#tx-origin)
 
-## Reentrancy
+## Reentrancy attacks
 
-DAO flaw
+## Description of Reentrancy attacks
+
+A contract during its normal execution may perform calls to other contracts, by doing function calls or simply transferring Ether. These contracts can themselves call other contracts. In particular, they can call back to the contract that called them, or any other in the call stack. In that case, we say that the contract is re-entered, and this situation is known as reentrancy.
+Reentrancy by itself is not an issue. The issue arises when a contract is re-entered in an “inconsistent” state.
+If a vulnerable smart contract make an external call or send ethers to a malicious smart contract before updating its state first, the malicious smart contract can call back the vulnerable smart contract which is still in an inconsistent state because the interaction is not completed.
 
 ### single function reentrancy attack
+
+```solidity
+// Vulnerable to single function reentrancy attack
+
+mapping (address => uint) private _balances;
+
+function withdraw() public {
+    uint256 amount = _balances[msg.sender];
+    // Can call a reiceve or fallback function on a malicious smart contract
+    // And  the malicious smart contract will call again withdraw() before
+    // balances[msg.sender] is updated
+    (bool success, ) = msg.sender.call{value: amount}("");
+    require(success);
+    // BAD: balances update come after ethers sending
+    _balances[msg.sender] = _balances[msg.sender].sub(amount);
+}
+```
+
+If `withdraw()` is called by a user account, there is no problem because user account can't execute code a ethers reception.
+If `withdraw()` is called by a malicious smart contract, `msg.sender.call.value(amount)("");` will execute the `receive()` or `fallback()` function of the malicious smart contract, which can call again `withdraw()` function, again and again
+
+```solidity
+// receive function of a malicious smart contract
+receive() external payable {
+  _vulWallet.withdraw();
+}
+
+```
 
 ### cross-function reentrance attack
 
